@@ -3,9 +3,9 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FluentValidation;
-using FMLab.Aspnet.CleanArchitecture.Application.Shared.Mediator.Pipeline;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.CreateUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.UpdateUser;
+using FMLab.Aspnet.CleanArchitecture.Application.Shared.Mediator.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

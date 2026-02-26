@@ -4,11 +4,10 @@
 
 using FluentValidation;
 using FluentValidation.Results;
-using FMLab.Aspnet.CleanArchitecture.Application.Interfaces;
+using FMLab.Aspnet.CleanArchitecture.Application.Handlers.CreateUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Gateways;
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Repositories;
 using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
-using FMLab.Aspnet.CleanArchitecture.Application.Handlers.CreateUser;
 using NSubstitute;
 
 namespace FMLab.Aspnet.CleanArchitecture.Tests.Application.Handlers.CreateUser;

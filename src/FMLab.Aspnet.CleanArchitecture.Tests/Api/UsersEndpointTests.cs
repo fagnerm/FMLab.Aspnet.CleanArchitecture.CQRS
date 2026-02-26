@@ -161,7 +161,7 @@ public class UsersEndpointTests
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Fact (Skip = "Needs refactoring")]
+    [Fact(Skip = "Needs refactoring")]
     public async Task POST_Deactivate_WhenAlreadyDeactivated_Returns422()
     {
         using var factory = new ApiTestFactory();
@@ -197,7 +197,7 @@ public class UsersEndpointTests
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Fact ( Skip = "Needs refactoring")]
+    [Fact(Skip = "Needs refactoring")]
     public async Task PATCH_Users_WhenExists_Returns200WithUpdatedData()
     {
         using var factory = new ApiTestFactory();

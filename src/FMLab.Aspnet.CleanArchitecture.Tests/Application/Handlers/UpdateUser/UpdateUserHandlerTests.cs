@@ -4,10 +4,10 @@
 
 using FluentValidation;
 using FluentValidation.Results;
+using FMLab.Aspnet.CleanArchitecture.Application.Handlers.UpdateUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces;
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Repositories;
 using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
-using FMLab.Aspnet.CleanArchitecture.Application.Handlers.UpdateUser;
 using FMLab.Aspnet.CleanArchitecture.Domain.Entities;
 using FMLab.Aspnet.CleanArchitecture.Domain.ValueObjects;
 using MediatR;

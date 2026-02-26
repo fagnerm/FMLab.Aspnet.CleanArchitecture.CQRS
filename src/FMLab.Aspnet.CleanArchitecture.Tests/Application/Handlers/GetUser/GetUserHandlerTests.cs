@@ -3,9 +3,9 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FMLab.Aspnet.CleanArchitecture.Application.DTOs;
+using FMLab.Aspnet.CleanArchitecture.Application.Handlers.GetUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Gateways;
 using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
-using FMLab.Aspnet.CleanArchitecture.Application.Handlers.GetUser;
 using NSubstitute;
 
 namespace FMLab.Aspnet.CleanArchitecture.Tests.Application.Handlers.GetUser;
