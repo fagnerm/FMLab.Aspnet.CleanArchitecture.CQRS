@@ -5,17 +5,19 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMLab.Aspnet.CleanArchitecture.Api.Handlers;
+namespace FMLab.Aspnet.CleanArchitecture.Api.Exception;
 
 public class GenericException : IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, System.Exception exception, CancellationToken cancellationToken)
     {
+        if (exception is Domain.Exceptions.DomainException) return false;
+
         var problem = new ProblemDetails
         {
+            Type = "about:blank",
             Status = StatusCodes.Status500InternalServerError,
-            Title = "Internal Server Error",
-            Detail = exception.Message
+            Title = "Internal Error"
         };
 
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

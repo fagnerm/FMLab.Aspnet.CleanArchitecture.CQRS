@@ -2,7 +2,8 @@
 // Copyright (c) 2026 Fagner Marinho 
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
-using FMLab.Aspnet.CleanArchitecture.Api.Handlers;
+using FMLab.Aspnet.CleanArchitecture.Api.Exception;
+using DomainException = FMLab.Aspnet.CleanArchitecture.Api.Exception.DomainException;
 
 namespace FMLab.Aspnet.CleanArchitecture.Api.Configurations;
 
@@ -10,21 +11,9 @@ public static class ProblemDetails
 {
     public static IServiceCollection AddAppProblemDetails(this IServiceCollection services)
     {
+        services.AddExceptionHandler<DomainException>();
         services.AddExceptionHandler<GenericException>();
-        services.AddProblemDetails(options =>
-        {
-            options.CustomizeProblemDetails = context =>
-            {
-                context.ProblemDetails.Extensions["traceID"] = context.HttpContext.TraceIdentifier;
-
-                if (context.Exception is Exception ex)
-                {
-                    context.ProblemDetails.Status = 500;
-                    context.ProblemDetails.Title = "Internal Server Error";
-                    context.ProblemDetails.Detail = ex.Message;
-                }
-            };
-        });
+        services.AddProblemDetails();
 
         return services;
     }
