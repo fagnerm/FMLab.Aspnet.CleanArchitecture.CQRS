@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="FMLab.Aspnet.CleanArchitecture.Api/FMLab.Aspnet.CleanArchitecture.Api.csproj" />
+  <Project Path="FMLab.Aspnet.CleanArchitecture.Application/FMLab.Aspnet.CleanArchitecture.Application.csproj" />
+  <Project Path="FMLab.Aspnet.CleanArchitecture.Domain/FMLab.Aspnet.CleanArchitecture.Domain.csproj" />
+  <Project Path="FMLab.Aspnet.CleanArchitecture.Infrastructure/FMLab.Aspnet.CleanArchitecture.Infrastructure.csproj" />
+  <Project Path="FMLab.Aspnet.CleanArchitecture.Tests/FMLab.Aspnet.CleanArchitecture.Tests.csproj" />
+</Solution>
