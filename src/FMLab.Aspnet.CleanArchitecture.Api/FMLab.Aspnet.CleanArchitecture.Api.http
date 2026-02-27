@@ -1,11 +1,11 @@
-@FMLab.Aspnet.CleanArchitecture.Api_HostAddress = https://localhost:44356
+@FMLab.Aspnet.CleanArchitecture.Api_HostAddress = http://localhost:9000
 
 POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users
 Content-Type: application/json
 
 {
-  "name": "Paloma Marinho",
-  "email": "paloma@email.com"
+  "name": "Jon Doe",
+  "email": "john.doe@email.com"
 }
 
 ###
@@ -34,8 +34,7 @@ PATCH {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
 Content-Type: application/json
 
 {
-  "name": "Fagner",
-  "email": "fagner@email.com"
+  "name": "John Doe"
 }
 
 ###
@@ -44,7 +43,7 @@ PUT {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
 Content-Type: application/json
 
 {
-  "name": "Fagner"
+  "name": "John Doe"
 }
 
 ###
