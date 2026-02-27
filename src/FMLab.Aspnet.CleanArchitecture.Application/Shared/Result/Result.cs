@@ -1,5 +1,5 @@
-﻿// API - Clean architecture boilerplate
-// Copyright (c) 2026 Fagner Marinho 
+// API - Clean architecture boilerplate
+// Copyright (c) 2026 Fagner Marinho
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
@@ -15,13 +15,13 @@ public class Result
 
     private Result(ResultType type = ResultType.Success)
     {
+        IsSuccess = type is ResultType.Success or ResultType.NoContent;
         Type = type;
         _data = default!;
     }
 
     private Result(string? error, ResultType type)
     {
-        IsSuccess = false;
         Error = error;
         Type = type;
         _data = default!;
@@ -34,6 +34,12 @@ public class Result
             IsSuccess = true,
             _data = data
         };
+    }
+
+    public static Result NoContent()
+    {
+        return new Result(ResultType.NoContent);
+
     }
 
     public static Result NotFound(string? error)

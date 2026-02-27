@@ -29,6 +29,6 @@ public class DisableUserHandler : IRequestHandler<DisableUserCommand, Result>
         user.Deactivate();
         _repository.Update(user);
 
-        return Result.Success();
+        return Result.NoContent();
     }
 }

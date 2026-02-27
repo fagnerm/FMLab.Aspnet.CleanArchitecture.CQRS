@@ -25,6 +25,6 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Result>
 
         _repository.Delete(existingUser!);
 
-        return Result.Success();
+        return Result.NoContent();
     }
 }

@@ -9,7 +9,6 @@ using FMLab.Aspnet.CleanArchitecture.Application.Handlers.DisableUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.GetUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.ListUsers;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.UpdateUser;
-using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -95,7 +94,7 @@ internal static class UserEndpoints
         var input = new DisableUserCommand(id);
         var output = await mediator.Send(input, cancellationToken);
 
-        return output.ToProblemResult(ResultType.NoContent);
+        return output.ToProblemResult();
     }
 
     private static async Task<IResult> PutUserEndpoint([FromServices] IMediator mediator, [FromRoute] int id, [FromBody] UpdateUserInputRequest body, CancellationToken cancellationToken)
@@ -119,6 +118,6 @@ internal static class UserEndpoints
         var input = new DeleteUserCommand(id);
         var output = await mediator.Send(input, cancellationToken);
 
-        return output.ToProblemResult(ResultType.NoContent);
+        return output.ToProblemResult();
     }
 }
