@@ -26,6 +26,16 @@ public class ExtensionsTests
     }
 
     [Fact]
+    public void ToProblemResult_OnNoContent_ReturnsNoContent()
+    {
+        var result = Result.NoContent();
+
+        var httpResult = result.ToProblemResult();
+
+        Assert.IsType<NoContent>(httpResult);
+    }
+
+    [Fact]
     public void ToProblemResult_OnSuccessWithNoContentDefault_ReturnsNoContent()
     {
         var result = Result.Success();
