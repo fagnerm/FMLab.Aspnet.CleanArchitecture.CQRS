@@ -1,6 +1,6 @@
 ## Project Overview
 
-An ASP.NET Core API built as a Clean Architecture reference implementation.\
+An ASP.NET Core API built as a Clean Architecture + CQRS reference implementation.\
 The goal is to showcase layer separation, testability, and domain-centric design.
 
 ## Pattern Concept
@@ -13,9 +13,6 @@ Clean Architecture enforces separation of concerns by dividing the application i
 Details such as UI, database provider, external services, or cloud infrastructure must never influence business logic.
 
 ## Architecture
-
-![Clean Architecture](https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg)
-
 **Dependency direction:**
 > Domain <- Application <- Infrastructure <- Api
 
@@ -47,7 +44,7 @@ Details such as UI, database provider, external services, or cloud infrastructur
 - `PATCH  /users/{id}` - Partial update. Only provided fields are changed
 - `DELETE /users/{id}` - Remove a user
 - `POST   /users/{id}/deactivate` - Deactivate a user
-  
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
