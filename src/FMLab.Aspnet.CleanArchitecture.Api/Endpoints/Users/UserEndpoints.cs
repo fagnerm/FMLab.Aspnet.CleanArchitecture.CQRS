@@ -108,7 +108,7 @@ internal static class UserEndpoints
 
     private static async Task<IResult> PatchUserEndpoint([FromServices] IMediator mediator, [FromRoute] int id, [FromBody] UpdateUserInputRequest body, CancellationToken cancellationToken)
     {
-        var input = new UpdateUserCommand(id, body.Name, body.Email);
+        var input = new PatchUserCommand(id, body.Name, body.Email);
         var output = await mediator.Send(input, cancellationToken);
 
         return output.ToProblemResult();

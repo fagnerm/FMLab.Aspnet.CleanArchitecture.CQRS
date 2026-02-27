@@ -24,7 +24,6 @@ public static class ApplicationModule
         });
 
         services.AddScoped<IValidator<CreateUserCommand>, CreateUserValidator>();
-        services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserValidator>();
 
         return services;
     }
