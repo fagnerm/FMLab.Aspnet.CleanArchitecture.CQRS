@@ -4,7 +4,6 @@
 
 using FluentValidation;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.CreateUser;
-using FMLab.Aspnet.CleanArchitecture.Application.Handlers.UpdateUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Shared.Mediator.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

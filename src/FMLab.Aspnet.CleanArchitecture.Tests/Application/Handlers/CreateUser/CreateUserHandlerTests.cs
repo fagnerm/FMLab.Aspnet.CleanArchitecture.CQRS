@@ -33,10 +33,10 @@ public class CreateUserHandlerTests
         var result = await _mediator.Handle(new CreateUserCommand("Fagner", "fagner@example.com"), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Data<CreateUserOutputDTO>());
-        Assert.Equal("Fagner", result.Data<CreateUserOutputDTO>().Name);
-        Assert.Equal("fagner@example.com", result.Data<CreateUserOutputDTO>().Email);
-        Assert.Equal("Active", result.Data<CreateUserOutputDTO>().Status);
+        Assert.NotNull(result.Data);
+        Assert.Equal("Fagner", result.Data.Name);
+        Assert.Equal("fagner@example.com", result.Data.Email);
+        Assert.Equal("Active", result.Data.Status);
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class CreateUserHandlerTests
         var result = await _mediator.Handle(new CreateUserCommand("Fagner", null), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.Null(result.Data<CreateUserOutputDTO>()!.Email);
+        Assert.Null(result.Data!.Email);
     }
 
     [Fact]

@@ -8,13 +8,14 @@ namespace FMLab.Aspnet.CleanArchitecture.Api.Endpoints.Helpers;
 
 public static class Extensions
 {
-    public static IResult ToProblemResult(this Result result, ResultType? @default = null)
+    public static IResult ToProblemResult<TResult>(this Result<TResult> result, ResultType? @default = null)
+        where TResult : class
     {
         var type = result.IsSuccess && @default.HasValue ? @default : result.Type;
 
         return type switch
         {
-            ResultType.Success => Results.Ok(result.Data<IResultData>()),
+            ResultType.Success => Results.Ok(result.Data),
             ResultType.NoContent => Results.NoContent(),
             ResultType.NotFound => Results.Problem(result.Error, statusCode: StatusCodes.Status404NotFound, type: "about:blank"),
             ResultType.Validation => Results.Problem(result.Error, statusCode: StatusCodes.Status422UnprocessableEntity, type: "about:blank"),

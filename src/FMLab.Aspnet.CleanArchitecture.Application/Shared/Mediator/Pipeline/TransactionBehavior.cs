@@ -1,15 +1,17 @@
-﻿// API - Clean architecture boilerplate
-// Copyright (c) 2026 Fagner Marinho 
+// API - Clean architecture boilerplate
+// Copyright (c) 2026 Fagner Marinho
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces;
 using FMLab.Aspnet.CleanArchitecture.Application.Shared.Mediator.Request;
+using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 using MediatR;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Shared.Mediator.Pipeline;
+
 public class TransactionBehavior<TInput, TResponse> : IPipelineBehavior<TInput, TResponse>
     where TInput : ICommand<TResponse>
-    where TResponse : Result.Result
+    where TResponse : class, IResultBase
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -26,9 +28,7 @@ public class TransactionBehavior<TInput, TResponse> : IPipelineBehavior<TInput, 
         {
             var response = await next();
 
-            var result = response as Result.Result;
-
-            if (!result.IsSuccess)
+            if (!response.IsSuccess)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return response;

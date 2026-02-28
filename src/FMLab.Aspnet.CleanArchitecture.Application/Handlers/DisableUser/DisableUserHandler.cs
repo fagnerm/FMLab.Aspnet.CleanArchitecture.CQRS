@@ -8,7 +8,7 @@ using MediatR;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.DisableUser;
 
-public class DisableUserHandler : IRequestHandler<DisableUserCommand, Result>
+public class DisableUserHandler : IRequestHandler<DisableUserCommand, Result<NoOutput>>
 {
     private readonly IUserRepository _repository;
 
@@ -17,18 +17,18 @@ public class DisableUserHandler : IRequestHandler<DisableUserCommand, Result>
         _repository = repository;
     }
 
-    public async Task<Result> Handle(DisableUserCommand input, CancellationToken cancellationToken)
+    public async Task<Result<NoOutput>> Handle(DisableUserCommand input, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(input.Id, cancellationToken);
 
         if (user == null)
         {
-            return Result.NotFound("User not found");
+            return Result<NoOutput>.NotFound("User not found");
         }
 
         user.Deactivate();
         _repository.Update(user);
 
-        return Result.NoContent();
+        return Result<NoOutput>.NoContent();
     }
 }

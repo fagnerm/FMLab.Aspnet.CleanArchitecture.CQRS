@@ -35,10 +35,10 @@ public class ListUsersHandlerTests
         var result = await _handler.Handle(new ListUsersQuery(null, 1, 20), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(2, result.Data<CollectionResult<UserSummaryDTO>>()!.TotalItems);
-        Assert.Equal(2, result.Data<CollectionResult<UserSummaryDTO>>().Items.Count);
-        Assert.Equal(1, result.Data<CollectionResult<UserSummaryDTO>>().Page);
-        Assert.Equal(20, result.Data<CollectionResult<UserSummaryDTO>>().PageSize);
+        Assert.Equal(2, result.Data!.TotalItems);
+        Assert.Equal(2, result.Data.Items.Count);
+        Assert.Equal(1, result.Data.Page);
+        Assert.Equal(20, result.Data.PageSize);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class ListUsersHandlerTests
         var result = await _handler.Handle(new ListUsersQuery(null, 1, 20), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.Empty(result.Data<CollectionResult<UserSummaryDTO>>().Items);
-        Assert.Equal(0, result.Data<CollectionResult<UserSummaryDTO>>().TotalItems);
+        Assert.Empty(result.Data!.Items);
+        Assert.Equal(0, result.Data.TotalItems);
     }
 }

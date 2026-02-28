@@ -1,14 +1,16 @@
-﻿// API - Clean architecture boilerplate
-// Copyright (c) 2026 Fagner Marinho 
+// API - Clean architecture boilerplate
+// Copyright (c) 2026 Fagner Marinho
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FluentValidation;
+using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 using MediatR;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Shared.Mediator.Pipeline;
+
 public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : Result.Result
+    where TResponse : class, IResultBase<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -31,7 +33,7 @@ public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
             .ToList();
 
         if (failures.Count != 0)
-            return (TResponse)Result.Result.Validation(failures.FirstOrDefault()?.ErrorMessage);
+            return TResponse.Validation(failures[0].ErrorMessage);
 
         return await next();
     }

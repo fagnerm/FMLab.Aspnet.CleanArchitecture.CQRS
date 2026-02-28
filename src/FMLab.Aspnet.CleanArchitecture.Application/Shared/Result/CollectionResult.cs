@@ -4,7 +4,7 @@
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 
-public record CollectionResult<TItems> : IResultData
+public record CollectionResult<TItems>
     where TItems : class
 {
     public int Page { get; init; }

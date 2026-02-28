@@ -11,24 +11,24 @@ namespace FMLab.Aspnet.CleanArchitecture.Tests.Api.Helpers;
 
 public class ExtensionsTests
 {
-    private sealed record TestData(string Value) : IResultData;
+    private sealed record TestData(string Value);
 
     [Fact]
     public void ToProblemResult_OnSuccess_ReturnsOkWithData()
     {
         var data = new TestData("test");
-        var result = Result.Success(data);
+        var result = Result<TestData>.Success(data);
 
         var httpResult = result.ToProblemResult();
 
-        var ok = Assert.IsType<Ok<IResultData>>(httpResult);
+        var ok = Assert.IsType<Ok<TestData>>(httpResult);
         Assert.Equal(data, ok.Value);
     }
 
     [Fact]
     public void ToProblemResult_OnNoContent_ReturnsNoContent()
     {
-        var result = Result.NoContent();
+        var result = Result<NoOutput>.NoContent();
 
         var httpResult = result.ToProblemResult();
 
@@ -38,7 +38,7 @@ public class ExtensionsTests
     [Fact]
     public void ToProblemResult_OnSuccessWithNoContentDefault_ReturnsNoContent()
     {
-        var result = Result.Success();
+        var result = Result<NoOutput>.Success();
 
         var httpResult = result.ToProblemResult(ResultType.NoContent);
 
@@ -48,7 +48,7 @@ public class ExtensionsTests
     [Fact]
     public void ToProblemResult_OnNotFound_Returns404Problem()
     {
-        var result = Result.NotFound("User not found");
+        var result = Result<NoOutput>.NotFound("User not found");
 
         var httpResult = result.ToProblemResult();
 
@@ -60,7 +60,7 @@ public class ExtensionsTests
     [Fact]
     public void ToProblemResult_OnValidation_Returns422Problem()
     {
-        var result = Result.Validation("Name is required");
+        var result = Result<NoOutput>.Validation("Name is required");
 
         var httpResult = result.ToProblemResult();
 
@@ -72,7 +72,7 @@ public class ExtensionsTests
     [Fact]
     public void ToProblemResult_OnDomain_Returns422Problem()
     {
-        var result = Result.Domain("User already deactivated");
+        var result = Result<NoOutput>.Domain("User already deactivated");
 
         var httpResult = result.ToProblemResult();
 
@@ -84,7 +84,7 @@ public class ExtensionsTests
     [Fact]
     public void ToProblemResult_OnConflict_Returns409Problem()
     {
-        var result = Result.Conflict("User already exists");
+        var result = Result<NoOutput>.Conflict("User already exists");
 
         var httpResult = result.ToProblemResult();
 
@@ -96,7 +96,7 @@ public class ExtensionsTests
     [Fact]
     public void ToProblemResult_OnFailure_DefaultIsIgnored()
     {
-        var result = Result.NotFound("not found");
+        var result = Result<NoOutput>.NotFound("not found");
 
         var httpResult = result.ToProblemResult(ResultType.NoContent);
 

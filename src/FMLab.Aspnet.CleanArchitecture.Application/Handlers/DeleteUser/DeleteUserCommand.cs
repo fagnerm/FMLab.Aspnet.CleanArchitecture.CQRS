@@ -7,4 +7,4 @@ using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.DeleteUser;
 
-public record DeleteUserCommand(int Id) : ICommand<Result>;
+public record DeleteUserCommand(int Id) : ICommand<Result<NoOutput>>;

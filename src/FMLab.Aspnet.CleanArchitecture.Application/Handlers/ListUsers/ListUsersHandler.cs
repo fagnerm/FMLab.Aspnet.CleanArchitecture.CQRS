@@ -8,7 +8,7 @@ using MediatR;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.ListUsers;
 
-public class ListUsersHandler : IRequestHandler<ListUsersQuery, Result>
+public class ListUsersHandler : IRequestHandler<ListUsersQuery, Result<ListUsersOutputDTO>>
 {
     private readonly IUserGateway _gateway;
 
@@ -17,12 +17,12 @@ public class ListUsersHandler : IRequestHandler<ListUsersQuery, Result>
         _gateway = gateway;
     }
 
-    public async Task<Result> Handle(ListUsersQuery input, CancellationToken cancellationToken)
+    public async Task<Result<ListUsersOutputDTO>> Handle(ListUsersQuery input, CancellationToken cancellationToken)
     {
         var filter = new ListUsersFilter(input.Status, input.Page, input.PageSize);
         var result = await _gateway.ListAsync(filter, cancellationToken);
 
         var output = new ListUsersOutputDTO(result.Items, result.Page, result.PageSize, result.TotalItems);
-        return Result.Success(output);
+        return Result<ListUsersOutputDTO>.Success(output);
     }
 }

@@ -7,4 +7,4 @@ using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.CreateUser;
 
-public record CreateUserCommand(string Name, string? Email) : ICommand<Result>;
+public record CreateUserCommand(string Name, string? Email) : ICommand<Result<CreateUserOutputDTO>>;

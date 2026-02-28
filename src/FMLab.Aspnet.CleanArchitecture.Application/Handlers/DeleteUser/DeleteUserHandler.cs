@@ -8,7 +8,7 @@ using MediatR;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.DeleteUser;
 
-public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Result>
+public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Result<NoOutput>>
 {
     private readonly IUserRepository _repository;
 
@@ -17,14 +17,14 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Result>
         _repository = repository;
     }
 
-    public async Task<Result> Handle(DeleteUserCommand input, CancellationToken cancellationToken)
+    public async Task<Result<NoOutput>> Handle(DeleteUserCommand input, CancellationToken cancellationToken)
     {
         var existingUser = await _repository.GetByIdAsync(input.Id, cancellationToken);
 
-        if (existingUser is null) return Result.NotFound("User not found");
+        if (existingUser is null) return Result<NoOutput>.NotFound("User not found");
 
         _repository.Delete(existingUser!);
 
-        return Result.NoContent();
+        return Result<NoOutput>.NoContent();
     }
 }

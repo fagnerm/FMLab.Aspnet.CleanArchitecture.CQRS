@@ -29,11 +29,11 @@ public class GetUserHandlerTests
         var result = await _handler.Handle(new GetUserQuery(1), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Data<UserSummaryDTO>());
-        Assert.Equal(1, result.Data<UserSummaryDTO>().Id);
-        Assert.Equal("Fagner", result.Data<UserSummaryDTO>().Name);
-        Assert.Equal("fagner@example.com", result.Data<UserSummaryDTO>().Email);
-        Assert.Equal("Active", result.Data<UserSummaryDTO>().Status);
+        Assert.NotNull(result.Data);
+        Assert.Equal(1, result.Data.Id);
+        Assert.Equal("Fagner", result.Data.Name);
+        Assert.Equal("fagner@example.com", result.Data.Email);
+        Assert.Equal("Active", result.Data.Status);
     }
 
     [Fact]

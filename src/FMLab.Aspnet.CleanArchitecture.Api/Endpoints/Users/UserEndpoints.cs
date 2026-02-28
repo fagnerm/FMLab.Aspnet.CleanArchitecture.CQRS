@@ -85,7 +85,7 @@ internal static class UserEndpoints
 
         if (!output.IsSuccess) return output.ToProblemResult();
 
-        var result = output.Data<CreateUserOutputDTO>();
+        var result = output.Data;
         return Results.Created($"/users/{result?.Id}", result);
     }
 

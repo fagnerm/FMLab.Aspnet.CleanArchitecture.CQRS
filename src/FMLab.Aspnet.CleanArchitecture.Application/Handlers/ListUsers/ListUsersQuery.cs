@@ -10,4 +10,4 @@ using FMLab.Aspnet.CleanArchitecture.Domain.Enums;
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.ListUsers;
 
 public record ListUsersQuery(UserStatus? Status, int Page = 1, int PageSize = 20)
-    : PaginationFilter(Page, PageSize), IQuery<Result>;
+    : PaginationFilter(Page, PageSize), IQuery<Result<ListUsersOutputDTO>>;

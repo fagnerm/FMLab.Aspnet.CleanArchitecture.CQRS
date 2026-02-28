@@ -7,4 +7,4 @@ using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;
 
 namespace FMLab.Aspnet.CleanArchitecture.Application.Handlers.DisableUser;
 
-public record DisableUserCommand(int Id) : ICommand<Result>;
+public record DisableUserCommand(int Id) : ICommand<Result<NoOutput>>;
