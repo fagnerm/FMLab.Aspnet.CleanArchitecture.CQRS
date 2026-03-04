@@ -86,7 +86,7 @@ public class UserGatewayTests
 
         await using var context = DbContextFactory.Create(dbName);
         var gateway = new UserGateway(context);
-        var filter = new ListUsersFilter(null, Page: 1, PageSize: 2);
+        var filter = new ListUsersFilter(null, page: 1, pageSize: 2);
 
         var result = await gateway.ListAsync(filter, CancellationToken.None);
 
@@ -108,7 +108,7 @@ public class UserGatewayTests
 
         await using var context = DbContextFactory.Create(dbName);
         var gateway = new UserGateway(context);
-        var filter = new ListUsersFilter(null, Page: 2, PageSize: 2);
+        var filter = new ListUsersFilter(null, page: 2, pageSize: 2);
 
         var result = await gateway.ListAsync(filter, CancellationToken.None);
 

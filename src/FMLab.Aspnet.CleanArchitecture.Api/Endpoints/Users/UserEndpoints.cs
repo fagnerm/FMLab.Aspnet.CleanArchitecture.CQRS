@@ -70,7 +70,7 @@ internal static class UserEndpoints
             .WithOpenApi();
     }
 
-    private static async Task<IResult> ListAllUsersEndpoint([FromServices] IMediator mediator, [AsParameters] ListUsersQuery input, CancellationToken cancellationToken)
+    private static async Task<IResult> ListAllUsersEndpoint([FromServices] IMediator mediator, [AsParameters] ListUsersFilter input, CancellationToken cancellationToken)
     {
         var output = await mediator.Send(input, cancellationToken);
 
