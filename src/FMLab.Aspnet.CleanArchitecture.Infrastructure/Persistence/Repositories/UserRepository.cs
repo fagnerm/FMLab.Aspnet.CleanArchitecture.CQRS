@@ -20,8 +20,7 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(User User, CancellationToken cancellationToken)
     {
-        await _dbContext.AddAsync(User, cancellationToken)
-                        .ConfigureAwait(false);
+        await _dbContext.AddAsync(User, cancellationToken);
     }
 
     public void Delete(User user)
