@@ -37,7 +37,7 @@ public static class Swagger
 
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Layered Architecture API",
+                Title = "Clean Architecture API",
                 Version = "v1"
             });
         });
@@ -51,8 +51,8 @@ public static class Swagger
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Layered Architecture V1");
-            options.DocumentTitle = "Layered Architecture API";
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Clean Architecture V1");
+            options.DocumentTitle = "Clean Architecture API";
         });
 
         return app;
