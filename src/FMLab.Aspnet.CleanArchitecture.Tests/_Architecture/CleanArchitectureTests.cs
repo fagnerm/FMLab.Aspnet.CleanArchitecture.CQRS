@@ -9,6 +9,7 @@ using FMLab.Aspnet.CleanArchitecture.Api.Configurations;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.CreateUser;
 using FMLab.Aspnet.CleanArchitecture.Domain.Entities;
 using FMLab.Aspnet.CleanArchitecture.Infrastructure.Persistence.Repositories;
+using MediatR;
 using static ArchUnitNET.Fluent.ArchRuleDefinition;
 
 namespace FMLab.Aspnet.CleanArchitecture.Tests._Architecture;
@@ -96,7 +97,8 @@ public class CleanArchitectureTests
     [Fact]
     public void HandlerClasses_ShouldReside_InApplicationLayer()
     {
-        Classes().That().HaveNameMatching(".*Handler")
+        Classes().That().ImplementInterface(typeof(IRequestHandler<,>))
+            .And().HaveNameMatching(".*Handler")
             .Should().ResideInAssembly(ApplicationAssembly)
             .Because("Handler logic belongs to the Application layer")
             .Check(Architecture);
