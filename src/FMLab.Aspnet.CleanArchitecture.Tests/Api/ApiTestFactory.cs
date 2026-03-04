@@ -20,7 +20,7 @@ namespace FMLab.Aspnet.CleanArchitecture.Tests.Api;
 internal sealed class ApiTestFactory : WebApplicationFactory<Program>
 {
     private readonly string _dbName = Guid.NewGuid().ToString();
-    private readonly string _apiKey;
+    private readonly string _apiKey = Guid.NewGuid().ToString();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -45,7 +45,7 @@ internal sealed class ApiTestFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureAppConfiguration((_, config) =>
         {
-            config.AddInMemoryCollection([new("ApiKey", _apiKey);
+            config.AddInMemoryCollection([new("ApiKey", _apiKey)]);
         });
 
         return base.CreateHost(builder);
