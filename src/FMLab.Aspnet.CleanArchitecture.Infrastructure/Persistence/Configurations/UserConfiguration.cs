@@ -16,10 +16,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(c => c.Id);
         builder.Property(n => n.Name)
                .HasConversion<NameToStringConverter>()
+               .HasColumnType("VARCHAR(255)")
                .IsRequired();
         builder.Property(e => e.Email)
-               .HasConversion<EmailToStringConverter>();
+               .HasConversion<EmailToStringConverter>()
+               .HasColumnType("VARCHAR(255)");
         builder.Property(s => s.Status)
+               .HasColumnType("VARCHAR(50)")
                .IsRequired();
+        builder.HasIndex(u => u.Name).IsUnique();
+        builder.HasIndex(u => u.Email).IsUnique();
     }
 }

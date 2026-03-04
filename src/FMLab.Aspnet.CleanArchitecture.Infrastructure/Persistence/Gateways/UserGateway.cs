@@ -20,19 +20,9 @@ public class UserGateway : IUserGateway
         _context = context;
     }
 
-    public async Task<bool> ExistsByKeyAsync(string? name, string? email, CancellationToken cancellationToken)
-    {
-        return await _context.Users
-                             .AsNoTracking()
-                             .AsQueryable()
-                             .AnyAsync(u => (name != null && u.Name.Value == name) ||
-                                            (email != null && u.Email!.Value == email), cancellationToken);
-    }
-
     public async Task<CollectionResult<UserSummaryDTO>> ListAsync(ListUsersFilter filter, CancellationToken cancellationToken)
     {
         var query = _context.Users
-                            .AsNoTracking()
                             .AsQueryable();
 
         if (filter.Status.HasValue)
@@ -42,28 +32,29 @@ public class UserGateway : IUserGateway
 
         var totalCount = await query.CountAsync(cancellationToken);
 
-        var items = await query.OrderByDescending(t => t.Name)
+        var items = await query.OrderBy(t => t.Id)
             .Skip((filter.Page - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .Select(t => new UserSummaryDTO(
                 t.Id,
                 t.Name.Value,
-                t.Email!.Value,
+                t.Email.Value,
                 t.Status.ToString()
                 ))
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         return new CollectionResult<UserSummaryDTO>(
             items, filter.Page, filter.PageSize, totalCount);
     }
 
-    public async Task<UserSummaryDTO?> ListUserByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<UserSummaryDTO?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var query = _context.Users
-                            .AsNoTracking()
                             .AsQueryable();
 
-        var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+        var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken)
+                              .ConfigureAwait(false);
 
         if (user is null)
         {

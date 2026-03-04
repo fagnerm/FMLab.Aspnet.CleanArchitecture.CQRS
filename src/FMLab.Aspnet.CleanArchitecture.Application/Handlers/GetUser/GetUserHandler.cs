@@ -20,7 +20,7 @@ public class GetUserHandler : IRequestHandler<GetUserQuery, Result<UserSummaryDT
 
     public async Task<Result<UserSummaryDTO>> Handle(GetUserQuery input, CancellationToken cancellationToken)
     {
-        var user = await _gateway.ListUserByIdAsync(input.Id, cancellationToken);
+        var user = await _gateway.GetByIdAsync(input.Id, cancellationToken);
 
         if (user == null)
         {

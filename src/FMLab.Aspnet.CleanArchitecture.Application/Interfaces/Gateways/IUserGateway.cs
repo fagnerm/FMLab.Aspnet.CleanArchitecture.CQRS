@@ -11,6 +11,5 @@ namespace FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Gateways;
 public interface IUserGateway
 {
     Task<CollectionResult<UserSummaryDTO>> ListAsync(ListUsersFilter filter, CancellationToken cancellationToken);
-    Task<UserSummaryDTO?> ListUserByIdAsync(int id, CancellationToken cancellationToken);
-    Task<bool> ExistsByKeyAsync(string? name, string? email, CancellationToken cancellationToken);
+    Task<UserSummaryDTO?> GetByIdAsync(int id, CancellationToken cancellationToken);
 }

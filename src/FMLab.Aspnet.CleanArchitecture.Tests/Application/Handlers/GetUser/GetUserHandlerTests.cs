@@ -24,7 +24,7 @@ public class GetUserHandlerTests
     public async Task ExecuteAsync_WhenUserExists_ReturnsSuccessWithData()
     {
         var dto = new UserSummaryDTO(1, "Fagner", "fagner@example.com", "Active");
-        _gateway.ListUserByIdAsync(1, Arg.Any<CancellationToken>()).Returns(dto);
+        _gateway.GetByIdAsync(1, Arg.Any<CancellationToken>()).Returns(dto);
 
         var result = await _handler.Handle(new GetUserQuery(1), CancellationToken.None);
 
@@ -40,17 +40,17 @@ public class GetUserHandlerTests
     public async Task ExecuteAsync_WhenUserExists_PassesCorrectIdToGateway()
     {
         var dto = new UserSummaryDTO(42, "Fagner", null, "Active");
-        _gateway.ListUserByIdAsync(42, Arg.Any<CancellationToken>()).Returns(dto);
+        _gateway.GetByIdAsync(42, Arg.Any<CancellationToken>()).Returns(dto);
 
         await _handler.Handle(new GetUserQuery(42), CancellationToken.None);
 
-        await _gateway.Received(1).ListUserByIdAsync(42, Arg.Any<CancellationToken>());
+        await _gateway.Received(1).GetByIdAsync(42, Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task ExecuteAsync_WhenUserNotFound_ReturnsNotFound()
     {
-        _gateway.ListUserByIdAsync(99, Arg.Any<CancellationToken>()).Returns((UserSummaryDTO?)null);
+        _gateway.GetByIdAsync(99, Arg.Any<CancellationToken>()).Returns((UserSummaryDTO?)null);
 
         var result = await _handler.Handle(new GetUserQuery(99), CancellationToken.None);
 

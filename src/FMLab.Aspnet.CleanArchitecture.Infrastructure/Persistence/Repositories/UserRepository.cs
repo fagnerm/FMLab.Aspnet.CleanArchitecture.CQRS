@@ -4,8 +4,10 @@
 
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Repositories;
 using FMLab.Aspnet.CleanArchitecture.Domain.Entities;
+using FMLab.Aspnet.CleanArchitecture.Domain.Exceptions;
 using FMLab.Aspnet.CleanArchitecture.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace FMLab.Aspnet.CleanArchitecture.Infrastructure.Persistence.Repositories;
 
@@ -18,9 +20,18 @@ public class UserRepository : IUserRepository
         _dbContext = context;
     }
 
-    public async Task AddAsync(User User, CancellationToken cancellationToken)
+    public async Task AddAsync(User user, CancellationToken cancellationToken)
     {
-        await _dbContext.AddAsync(User, cancellationToken);
+        try
+        {
+            await _dbContext.AddAsync(user, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            _dbContext.Entry(user).State = EntityState.Detached;
+            throw new DomainException("User already exists", ex);
+        }
     }
 
     public void Delete(User user)

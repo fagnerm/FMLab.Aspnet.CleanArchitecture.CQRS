@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS "Users" (
+    "Id"     SERIAL PRIMARY KEY,
+    "Name"   VARCHAR(255) NOT NULL,
+    "Email"  VARCHAR(255) NULL UNIQUE,
+    "Status" VARCHAR(50)  NOT NULL DEFAULT 'Active'
+);

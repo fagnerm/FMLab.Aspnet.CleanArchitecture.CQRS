@@ -138,7 +138,7 @@ public class UserGatewayTests
         await using var context = DbContextFactory.Create(dbName);
         var gateway = new UserGateway(context);
 
-        var result = await gateway.ListUserByIdAsync(user.Id, CancellationToken.None);
+        var result = await gateway.GetByIdAsync(user.Id, CancellationToken.None);
 
         Assert.NotNull(result);
         Assert.Equal(user.Id, result.Id);
@@ -156,7 +156,7 @@ public class UserGatewayTests
         await using var context = DbContextFactory.Create(dbName);
         var gateway = new UserGateway(context);
 
-        var result = await gateway.ListUserByIdAsync(user.Id, CancellationToken.None);
+        var result = await gateway.GetByIdAsync(user.Id, CancellationToken.None);
 
         Assert.NotNull(result);
         Assert.Null(result.Email);
@@ -168,64 +168,8 @@ public class UserGatewayTests
         await using var context = DbContextFactory.Create();
         var gateway = new UserGateway(context);
 
-        var result = await gateway.ListUserByIdAsync(999, CancellationToken.None);
+        var result = await gateway.GetByIdAsync(999, CancellationToken.None);
 
         Assert.Null(result);
-    }
-
-    [Fact]
-    public async Task ExistsByKeyAsync_WhenNameMatches_ReturnsTrue()
-    {
-        var user = new User(new Name("Fagner"), new Email("fagner@example.com"));
-        var dbName = await SeedAsync(user);
-
-        await using var context = DbContextFactory.Create(dbName);
-        var gateway = new UserGateway(context);
-
-        var exists = await gateway.ExistsByKeyAsync("Fagner", null, CancellationToken.None);
-
-        Assert.True(exists);
-    }
-
-    [Fact]
-    public async Task ExistsByKeyAsync_WhenEmailMatches_ReturnsTrue()
-    {
-        var user = new User(new Name("Fagner"), new Email("fagner@example.com"));
-        var dbName = await SeedAsync(user);
-
-        await using var context = DbContextFactory.Create(dbName);
-        var gateway = new UserGateway(context);
-
-        var exists = await gateway.ExistsByKeyAsync(null, "fagner@example.com", CancellationToken.None);
-
-        Assert.True(exists);
-    }
-
-    [Fact]
-    public async Task ExistsByKeyAsync_WhenNeitherMatches_ReturnsFalse()
-    {
-        var user = new User(new Name("Fagner"), new Email("fagner@example.com"));
-        var dbName = await SeedAsync(user);
-
-        await using var context = DbContextFactory.Create(dbName);
-        var gateway = new UserGateway(context);
-
-        var exists = await gateway.ExistsByKeyAsync("Unknown", "unknown@example.com", CancellationToken.None);
-
-        Assert.False(exists);
-    }
-
-    [Fact]
-    public async Task ExistsByKeyAsync_WhenBothParametersNull_ReturnsFalse()
-    {
-        var user = new User(new Name("Fagner"), new Email("fagner@example.com"));
-        var dbName = await SeedAsync(user);
-
-        await using var context = DbContextFactory.Create(dbName);
-        var gateway = new UserGateway(context);
-
-        var exists = await gateway.ExistsByKeyAsync(null, null, CancellationToken.None);
-
-        Assert.False(exists);
     }
 }
