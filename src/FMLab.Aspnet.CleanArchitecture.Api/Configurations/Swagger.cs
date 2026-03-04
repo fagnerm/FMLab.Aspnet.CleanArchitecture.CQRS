@@ -2,6 +2,8 @@
 // Copyright (c) 2026 Fagner Marinho 
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
+using Microsoft.OpenApi.Models;
+
 namespace FMLab.Aspnet.CleanArchitecture.Api.Configurations;
 
 public static class Swagger
@@ -10,9 +12,32 @@ public static class Swagger
     {
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
             {
-                Title = "Clean Architecture API",
+                Name = "X-Api-Key",
+                Type = SecuritySchemeType.ApiKey,
+                In = ParameterLocation.Header,
+                Description = "API Key authentication"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "ApiKey"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Layered Architecture API",
                 Version = "v1"
             });
         });
@@ -26,8 +51,8 @@ public static class Swagger
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Clean Architecture V1");
-            options.DocumentTitle = "Clean Architecture API";
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Layered Architecture V1");
+            options.DocumentTitle = "Layered Architecture API";
         });
 
         return app;

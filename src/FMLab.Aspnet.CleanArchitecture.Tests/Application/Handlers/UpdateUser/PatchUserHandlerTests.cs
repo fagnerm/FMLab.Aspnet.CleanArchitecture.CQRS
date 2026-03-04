@@ -7,12 +7,6 @@ using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Repositories;
 using FMLab.Aspnet.CleanArchitecture.Domain.Entities;
 using FMLab.Aspnet.CleanArchitecture.Domain.ValueObjects;
 using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FMLab.Aspnet.CleanArchitecture.Tests.Application.Handlers.UpdateUser;
 public class PatchUserHandlerTests

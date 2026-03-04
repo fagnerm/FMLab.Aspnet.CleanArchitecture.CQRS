@@ -2,7 +2,6 @@
 // Copyright (c) 2026 Fagner Marinho
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
-using FluentValidation.Results;
 using FMLab.Aspnet.CleanArchitecture.Application.Handlers.UpdateUser;
 using FMLab.Aspnet.CleanArchitecture.Application.Interfaces.Repositories;
 using FMLab.Aspnet.CleanArchitecture.Application.Shared.Result;

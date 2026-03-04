@@ -21,18 +21,21 @@ internal static class UserEndpoints
         app.MapGet("/users", ListAllUsersEndpoint)
             .WithTags("Users")
             .Produces(StatusCodes.Status200OK)
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapGet("/users/{id}", ListUserEndpoint)
             .WithTags("Users")
             .Produces(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status404NotFound)
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapPost("/users/{id}/deactivate", DisableUserEndpoint)
             .WithTags("Users")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status404NotFound)
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapPost("/users", PostUserEndpoint)
@@ -40,6 +43,7 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status409Conflict)
             .ProducesValidationProblem(StatusCodes.Status422UnprocessableEntity)
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapPatch("/users/{id}", PatchUserEndpoint)
@@ -47,6 +51,7 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem(StatusCodes.Status422UnprocessableEntity)
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapPut("/users/{id}", PutUserEndpoint)
@@ -54,12 +59,14 @@ internal static class UserEndpoints
             .Produces(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem(StatusCodes.Status422UnprocessableEntity)
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapDelete("/users/{id}", DeleteUserEndpoint)
             .WithTags("Users")
             .Produces(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status404NotFound)
+            .RequireAuthorization()
             .WithOpenApi();
     }
 
