@@ -22,7 +22,7 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.Database.CommitTransactionAsync(cancellationToken);
     }
 
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken)

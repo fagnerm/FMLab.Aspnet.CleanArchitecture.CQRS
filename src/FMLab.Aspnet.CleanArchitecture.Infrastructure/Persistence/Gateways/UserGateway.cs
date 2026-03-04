@@ -41,8 +41,7 @@ public class UserGateway : IUserGateway
                 t.Email.Value,
                 t.Status.ToString()
                 ))
-            .ToListAsync(cancellationToken)
-            .ConfigureAwait(false);
+            .ToListAsync(cancellationToken);
 
         return new CollectionResult<UserSummaryDTO>(
             items, filter.Page, filter.PageSize, totalCount);
@@ -53,8 +52,7 @@ public class UserGateway : IUserGateway
         var query = _context.Users
                             .AsQueryable();
 
-        var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken)
-                              .ConfigureAwait(false);
+        var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         if (user is null)
         {
