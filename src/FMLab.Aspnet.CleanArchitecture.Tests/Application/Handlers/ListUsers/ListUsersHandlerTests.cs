@@ -32,7 +32,7 @@ public class ListUsersHandlerTests
         var collection = new CollectionResult<UserSummaryDTO>(items, page: 1, pageSize: 20, totalItems: 2);
         _gateway.ListAsync(Arg.Any<ListUsersFilter>(), Arg.Any<CancellationToken>()).Returns(collection);
 
-        var result = await _handler.Handle(new ListUsersQuery(null, 1, 20), CancellationToken.None);
+        var result = await _handler.Handle(new ListUsersFilter(null, 1, 20), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(2, result.Data!.TotalItems);
@@ -48,7 +48,7 @@ public class ListUsersHandlerTests
         var collection = new CollectionResult<UserSummaryDTO>(items, 1, 20, 0);
         _gateway.ListAsync(Arg.Any<ListUsersFilter>(), Arg.Any<CancellationToken>()).Returns(collection);
 
-        await _handler.Handle(new ListUsersQuery(UserStatus.Active, 1, 20), CancellationToken.None);
+        await _handler.Handle(new ListUsersFilter(UserStatus.Active, 1, 20), CancellationToken.None);
 
         await _gateway.Received(1).ListAsync(
             Arg.Is<ListUsersFilter>(f => f.Status == UserStatus.Active && f.Page == 1 && f.PageSize == 20),
@@ -62,7 +62,7 @@ public class ListUsersHandlerTests
         var collection = new CollectionResult<UserSummaryDTO>(items, 2, 10, 0);
         _gateway.ListAsync(Arg.Any<ListUsersFilter>(), Arg.Any<CancellationToken>()).Returns(collection);
 
-        await _handler.Handle(new ListUsersQuery(null, 2, 10), CancellationToken.None);
+        await _handler.Handle(new ListUsersFilter(null, 2, 10), CancellationToken.None);
 
         await _gateway.Received(1).ListAsync(
             Arg.Is<ListUsersFilter>(f => f.Page == 2 && f.PageSize == 10),
@@ -75,7 +75,7 @@ public class ListUsersHandlerTests
         var collection = new CollectionResult<UserSummaryDTO>(new List<UserSummaryDTO>(), 1, 20, 0);
         _gateway.ListAsync(Arg.Any<ListUsersFilter>(), Arg.Any<CancellationToken>()).Returns(collection);
 
-        var result = await _handler.Handle(new ListUsersQuery(null, 1, 20), CancellationToken.None);
+        var result = await _handler.Handle(new ListUsersFilter(null, 1, 20), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Data!.Items);
