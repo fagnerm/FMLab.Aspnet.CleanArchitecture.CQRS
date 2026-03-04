@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Layered Architecture API - Throughput Discovery">
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="BASE_URL" elementType="Argument">
+            <stringProp name="Argument.name">BASE_URL</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PORT" elementType="Argument">
+            <stringProp name="Argument.name">PORT</stringProp>
+            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_KEY" elementType="Argument">
+            <stringProp name="Argument.name">API_KEY</stringProp>
+            <stringProp name="Argument.value">a95b6c81-ee4a-47f5-b681-609e1a8caf7a</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+
+      <!--
+        Throughput Discovery strategy
+        ─────────────────────────────
+        • Ramps from 0 → 300 concurrent threads over 5 min (1 thread/s).
+        • No ConstantThroughputTimer: threads run as fast as the API allows,
+          so observed TPS rises naturally with concurrency.
+        • DurationAssertion marks every sample that exceeds 1000 ms as failed.
+        • JSR223Listener evaluates a 100-sample sliding window; once ≥ 50 % of
+          recent samples are degraded (HTTP error OR response time > 1000 ms)
+          it calls askThreadsToStop() and the test ends automatically.
+        • Hard safety cap: 900 s (15 min).
+      -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Throughput Discovery — ramp to 300 threads">
+        <intProp name="ThreadGroup.num_threads">300</intProp>
+        <intProp name="ThreadGroup.ramp_time">150</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <longProp name="ThreadGroup.duration">300</longProp>
+        <longProp name="ThreadGroup.delay">0</longProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">-1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">X-Api-Key</stringProp>
+              <stringProp name="Header.value">${API_KEY}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /users">
+          <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.path">/users</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;name&quot;: &quot;${USER_NAME}&quot;,&#xd;
+&quot;email&quot;: &quot;${USER_EMAIL}&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+
+          <!-- ── Pre-processor: generate unique random name + e-mail ──────── -->
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Random Name Generator" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="script">
+// ── 100 first names ────────────────────────────────────────────────────────
+def firstNames = [
+    &quot;Alice&quot;,     &quot;Bruno&quot;,     &quot;Carlos&quot;,    &quot;Diana&quot;,     &quot;Eduardo&quot;,
+    &quot;Fernanda&quot;,  &quot;Gabriel&quot;,   &quot;Helena&quot;,    &quot;Igor&quot;,      &quot;Julia&quot;,
+    &quot;Kevin&quot;,     &quot;Laura&quot;,     &quot;Marcos&quot;,    &quot;Natalia&quot;,   &quot;Otavio&quot;,
+    &quot;Patricia&quot;,  &quot;Rafael&quot;,    &quot;Sabrina&quot;,   &quot;Thiago&quot;,    &quot;Vanessa&quot;,
+    &quot;Andre&quot;,     &quot;Beatriz&quot;,   &quot;Claudio&quot;,   &quot;Daniela&quot;,   &quot;Felipe&quot;,
+    &quot;Giovanna&quot;,  &quot;Henrique&quot;,  &quot;Isabela&quot;,   &quot;Joao&quot;,      &quot;Larissa&quot;,
+    &quot;Miguel&quot;,    &quot;Nadia&quot;,     &quot;Oscar&quot;,     &quot;Paula&quot;,     &quot;Ricardo&quot;,
+    &quot;Sofia&quot;,     &quot;Tiago&quot;,     &quot;Ursula&quot;,    &quot;Victor&quot;,    &quot;Yasmin&quot;,
+    &quot;Alan&quot;,      &quot;Bianca&quot;,    &quot;Cesar&quot;,     &quot;Debora&quot;,    &quot;Elias&quot;,
+    &quot;Fatima&quot;,    &quot;Gustavo&quot;,   &quot;Hannah&quot;,    &quot;Ivan&quot;,      &quot;Joana&quot;,
+    &quot;Leandro&quot;,   &quot;Mariana&quot;,   &quot;Nicolas&quot;,   &quot;Olivia&quot;,    &quot;Pedro&quot;,
+    &quot;Renata&quot;,    &quot;Samuel&quot;,    &quot;Tatiana&quot;,   &quot;Ubiratan&quot;,  &quot;Viviane&quot;,
+    &quot;Adriana&quot;,   &quot;Benjamin&quot;,  &quot;Camila&quot;,    &quot;Douglas&quot;,   &quot;Erica&quot;,
+    &quot;Flavio&quot;,    &quot;Giulia&quot;,    &quot;Higor&quot;,     &quot;Irene&quot;,     &quot;Jefferson&quot;,
+    &quot;Karina&quot;,    &quot;Leonardo&quot;,  &quot;Melissa&quot;,   &quot;Nathan&quot;,    &quot;Otilia&quot;,
+    &quot;Priscila&quot;,  &quot;Quesia&quot;,    &quot;Roberto&quot;,   &quot;Silvana&quot;,   &quot;Tobias&quot;,
+    &quot;Uma&quot;,       &quot;Valentina&quot;, &quot;Wagner&quot;,    &quot;Xenia&quot;,     &quot;Zelia&quot;,
+    &quot;Abigail&quot;,   &quot;Bernardo&quot;,  &quot;Cristina&quot;,  &quot;Davi&quot;,      &quot;Emilia&quot;,
+    &quot;Francisco&quot;, &quot;Graziela&quot;,  &quot;Hugo&quot;,      &quot;Ines&quot;,      &quot;Joaquim&quot;,
+    &quot;Katia&quot;,     &quot;Lucas&quot;,     &quot;Monica&quot;,    &quot;Norberto&quot;,  &quot;Orlando&quot;
+]
+
+// ── 100 middle names ───────────────────────────────────────────────────────
+def middleNames = [
+    &quot;Maria&quot;,      &quot;Jose&quot;,      &quot;Ana&quot;,        &quot;Paulo&quot;,     &quot;Luis&quot;,
+    &quot;Clara&quot;,      &quot;Rosa&quot;,      &quot;Joao&quot;,       &quot;Carlos&quot;,    &quot;Helena&quot;,
+    &quot;Marco&quot;,      &quot;Julia&quot;,     &quot;Felipe&quot;,     &quot;Beatriz&quot;,   &quot;Rafael&quot;,
+    &quot;Leticia&quot;,    &quot;Gabriel&quot;,   &quot;Amanda&quot;,     &quot;Eduardo&quot;,   &quot;Fernanda&quot;,
+    &quot;Ricardo&quot;,    &quot;Camila&quot;,    &quot;Henrique&quot;,   &quot;Isabela&quot;,   &quot;Larissa&quot;,
+    &quot;Thiago&quot;,     &quot;Mariana&quot;,   &quot;Victor&quot;,     &quot;Natalia&quot;,   &quot;Diego&quot;,
+    &quot;Priscila&quot;,   &quot;Andre&quot;,     &quot;Roberta&quot;,    &quot;Daniel&quot;,    &quot;Viviane&quot;,
+    &quot;Gustavo&quot;,    &quot;Patricia&quot;,  &quot;Roberto&quot;,    &quot;Adriana&quot;,   &quot;Renato&quot;,
+    &quot;Silvia&quot;,     &quot;Alexandre&quot;, &quot;Cristina&quot;,   &quot;Rodrigo&quot;,   &quot;Daniela&quot;,
+    &quot;Marcelo&quot;,    &quot;Vanessa&quot;,   &quot;Fabio&quot;,      &quot;Juliana&quot;,   &quot;Sergio&quot;,
+    &quot;Luciana&quot;,    &quot;Leonardo&quot;,  &quot;Claudia&quot;,    &quot;Renan&quot;,     &quot;Eliane&quot;,
+    &quot;Cesar&quot;,      &quot;Bruna&quot;,     &quot;Leandro&quot;,    &quot;Anderson&quot;,  &quot;Simone&quot;,
+    &quot;Fabiano&quot;,    &quot;Karina&quot;,    &quot;Wendell&quot;,    &quot;Tatiana&quot;,   &quot;Murilo&quot;,
+    &quot;Monica&quot;,     &quot;Elton&quot;,     &quot;Veronica&quot;,   &quot;Nilton&quot;,    &quot;Sandra&quot;,
+    &quot;Cledson&quot;,    &quot;Angela&quot;,    &quot;Dirceu&quot;,     &quot;Deborah&quot;,   &quot;Ivair&quot;,
+    &quot;Luciane&quot;,    &quot;Claudio&quot;,   &quot;Elisa&quot;,      &quot;Flavia&quot;,    &quot;Wilson&quot;,
+    &quot;Aparecida&quot;,  &quot;Valdeci&quot;,   &quot;Roseli&quot;,     &quot;Edson&quot;,     &quot;Marlene&quot;,
+    &quot;Afonso&quot;,     &quot;Tereza&quot;,    &quot;Darci&quot;,      &quot;Benedita&quot;,  &quot;Geraldo&quot;,
+    &quot;Aroldo&quot;,     &quot;Neusa&quot;,     &quot;Djalma&quot;,     &quot;Iracema&quot;,   &quot;Waldir&quot;,
+    &quot;Dilma&quot;,      &quot;Eunice&quot;,    &quot;Laercio&quot;,    &quot;Vilma&quot;,     &quot;Zulmira&quot;
+]
+
+// ── 100 last names ─────────────────────────────────────────────────────────
+def lastNames = [
+    &quot;Silva&quot;,       &quot;Santos&quot;,      &quot;Oliveira&quot;,    &quot;Souza&quot;,       &quot;Lima&quot;,
+    &quot;Pereira&quot;,     &quot;Costa&quot;,       &quot;Ferreira&quot;,    &quot;Alves&quot;,       &quot;Monteiro&quot;,
+    &quot;Rodrigues&quot;,   &quot;Almeida&quot;,     &quot;Nascimento&quot;,  &quot;Moreira&quot;,     &quot;Carvalho&quot;,
+    &quot;Rocha&quot;,       &quot;Gomes&quot;,       &quot;Martins&quot;,     &quot;Ribeiro&quot;,     &quot;Barbosa&quot;,
+    &quot;Cardoso&quot;,     &quot;Mendes&quot;,      &quot;Freitas&quot;,     &quot;Castro&quot;,      &quot;Cavalcante&quot;,
+    &quot;Pinto&quot;,       &quot;Ramos&quot;,       &quot;Nunes&quot;,       &quot;Correia&quot;,     &quot;Teixeira&quot;,
+    &quot;Dias&quot;,        &quot;Campos&quot;,      &quot;Lopes&quot;,       &quot;Machado&quot;,     &quot;Azevedo&quot;,
+    &quot;Neves&quot;,       &quot;Melo&quot;,        &quot;Farias&quot;,      &quot;Borges&quot;,      &quot;Cruz&quot;,
+    &quot;Vieira&quot;,      &quot;Cunha&quot;,       &quot;Barros&quot;,      &quot;Peixoto&quot;,     &quot;Lacerda&quot;,
+    &quot;Queiroz&quot;,     &quot;Fonseca&quot;,     &quot;Amaral&quot;,      &quot;Siqueira&quot;,    &quot;Andrade&quot;,
+    &quot;Batista&quot;,     &quot;Duarte&quot;,      &quot;Esteves&quot;,     &quot;Figueredo&quot;,   &quot;Guerra&quot;,
+    &quot;Henriques&quot;,   &quot;Iglesias&quot;,    &quot;Jardim&quot;,      &quot;Kronemberger&quot;,&quot;Miranda&quot;,
+    &quot;Nogueira&quot;,    &quot;Ordonez&quot;,     &quot;Pacheco&quot;,     &quot;Quental&quot;,     &quot;Rezende&quot;,
+    &quot;Serrano&quot;,     &quot;Torres&quot;,      &quot;Uchoa&quot;,       &quot;Vasconcelos&quot;, &quot;Xavier&quot;,
+    &quot;Zanella&quot;,     &quot;Abreu&quot;,       &quot;Bezerra&quot;,     &quot;Campello&quot;,    &quot;Dantas&quot;,
+    &quot;Evangelista&quot;, &quot;Fontes&quot;,      &quot;Guimaraes&quot;,   &quot;Horta&quot;,       &quot;Inocencio&quot;,
+    &quot;Junqueira&quot;,   &quot;Kuster&quot;,      &quot;Lustosa&quot;,     &quot;Mesquita&quot;,    &quot;Nery&quot;,
+    &quot;Portela&quot;,     &quot;Quaresma&quot;,    &quot;Raposo&quot;,      &quot;Sampaio&quot;,     &quot;Trindade&quot;,
+    &quot;Ulhoa&quot;,       &quot;Valente&quot;,     &quot;Wanderley&quot;,   &quot;Xisto&quot;,       &quot;Yano&quot;,
+    &quot;Zampieri&quot;,    &quot;Arruda&quot;,      &quot;Brandao&quot;,     &quot;Cordeiro&quot;,    &quot;Drumond&quot;
+]
+
+// 100 × 100 × 100 = 1 000 000 unique combinations
+def rnd        = new Random()
+def firstName  = firstNames[rnd.nextInt(firstNames.size())]
+def middleName = middleNames[rnd.nextInt(middleNames.size())]
+def lastName   = lastNames[rnd.nextInt(lastNames.size())]
+vars.put(&quot;USER_NAME&quot;, firstName + &quot; &quot; + middleName + &quot; &quot; + lastName)
+vars.put(&quot;USER_EMAIL&quot;, firstName + &quot;.&quot; + middleName + &quot;.&quot; + lastName + &quot;@email.com&quot;)
+            </stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+
+          <!-- ── Assertion: fail any sample that exceeds 1000 ms ─────────── -->
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Response Time &lt; 1000 ms" enabled="true">
+            <longProp name="DurationAssertion.duration">1000</longProp>
+          </DurationAssertion>
+          <hashTree/>
+
+          <!-- ── Listener: sliding-window auto-stop ─────────────────────── -->
+          <JSR223Listener guiclass="TestBeanGUI" testclass="JSR223Listener" testname="Auto-Stop on Degradation" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="script">
+// Sliding-window auto-stop
+// ─────────────────────────────────────────────────────────────────────────
+// Evaluates the last 100 samples. When &gt;= 50 % are degraded the test is
+// stopped automatically. A sample is considered degraded when:
+//   • The HTTP request fails (connection error, 4xx, 5xx), OR
+//   • The response time exceeds 1000 ms  ← caught by DurationAssertion above
+//     (assertion failure sets isSuccessful() = false)
+// ─────────────────────────────────────────────────────────────────────────
+
+def windowSize    = 100   // sliding window — number of recent samples to examine
+def stopThreshold = 0.50  // stop when this fraction of the window is degraded
+
+synchronized ('auto_stop_monitor'.intern()) {
+
+    // Skip evaluation once the stop has already been requested
+    if ('true'.equals(props.getProperty('autostop.triggered'))) return
+
+    // Lazily initialise the circular buffer stored in shared JMeter properties
+    def buf = props.get('autostop.buf')
+    if (buf == null) {
+        buf = new java.util.LinkedList()
+        props.put('autostop.buf', buf)
+    }
+
+    // Record 1 (degraded) or 0 (healthy) for this sample
+    buf.add(prev.isSuccessful() ? 0 : 1)
+    if (buf.size() &gt; windowSize) buf.removeFirst()
+
+    // Only act once the window is fully populated
+    if (buf.size() &gt;= windowSize) {
+        int    degraded = buf.count { it == 1 }
+        double rate     = degraded / (double) windowSize
+
+        if (rate &gt;= stopThreshold) {
+            props.put('autostop.triggered', 'true')
+            log.warn('AUTO-STOP: ' + (int)(rate * 100) + '% of last ' + windowSize
+                + ' samples degraded (HTTP error or response time &gt; 1000 ms). Stopping test.')
+            ctx.getEngine().askThreadsToStop()
+        }
+    }
+}
+            </stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+          </JSR223Listener>
+          <hashTree/>
+
+          <!-- ── Listener: full result detail (GUI / debug) ─────────────── -->
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+
+        </hashTree>
+
+        <!-- ── Listener: aggregate summary saved to disk ─────────────────── -->
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename">results.jtl</stringProp>
+        </ResultCollector>
+        <hashTree/>
+
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

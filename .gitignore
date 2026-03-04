@@ -54,3 +54,12 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Environment secrets
+.env
+!.env.example
+
+# Jmeter
+/test/jmeter/*.jtl
+/test/jmeter/test_output/test_*
+/test/jmeter/*.log
