@@ -3,10 +3,13 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FMLab.Aspnet.CleanArchitecture.Infrastructure.Persistence.Context;
+using FMLab.Aspnet.CleanArchitecture.Tests.Api.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FMLab.Aspnet.CleanArchitecture.Tests.Api;
 
@@ -17,6 +20,7 @@ namespace FMLab.Aspnet.CleanArchitecture.Tests.Api;
 internal sealed class ApiTestFactory : WebApplicationFactory<Program>
 {
     private readonly string _dbName = Guid.NewGuid().ToString();
+    private readonly string _apiKey;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -35,5 +39,21 @@ internal sealed class ApiTestFactory : WebApplicationFactory<Program>
             services.AddDbContext<ApplicationDbContext>(opts =>
                 opts.UseInMemoryDatabase(_dbName));
         });
+    }
+
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        builder.ConfigureAppConfiguration((_, config) =>
+        {
+            config.AddInMemoryCollection([new("ApiKey", _apiKey);
+        });
+
+        return base.CreateHost(builder);
+    }
+
+    protected override void ConfigureClient(HttpClient client)
+    {
+        client.DefaultRequestHeaders.Add("x-api-key", _apiKey);
+        base.ConfigureClient(client);
     }
 }
