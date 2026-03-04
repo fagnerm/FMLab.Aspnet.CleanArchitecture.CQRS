@@ -1,6 +1,6 @@
 ## Project Overview
 
-An ASP.NET Core API built as a Clean Architecture + CQRS reference implementation.\
+An ASP.NET Core API built as a Clean Architecture + CQRS + Postgres reference implementation.\
 The goal is to showcase layer separation, testability, and domain-centric design.
 
 ## Pattern Concept
